@@ -1,6 +1,6 @@
 /******************************************************************************
  
-Program chirpt.c - Generate a file of triangular data with changing frequency and amplitude
+Program chirpq.c - Generate a file of square waveform data with changing frequency and amplitude
 
   input:  sr      : sample rate (samples per second) 
           offset  : offset from zero
@@ -15,17 +15,9 @@ Program chirpt.c - Generate a file of triangular data with changing frequency an
 
   output: u       : random output signal
 
-The frequency can change linearly with time or expnentially with time.
-When the frequency increases exponentially with time, more time is spent on
-the lower frequencies.  
+to compile: gcc -O -o chirpq chirpq.c HPGutil.c NRutil.c -lm 
 
-to compile: 
-
-gcc -O -o chirpt chirpt.c HPGutil.c NRutil.c -lm 
-
-to run:
-
-chirpt sr offset ao af fo ff T p q outFile 
+to run:     chirpq sr offset ao af fo ff T p q outFile 
 
 Henri Gavin, Dept. Civil Engineering, Duke University, 2022-12-04
 ******************************************************************************/
@@ -62,8 +54,7 @@ int main(int argc, char *argv[])
          time  = 0.0,      // the current global time
          cycles,           // total number of cycles
          ai = 0.0,         // the current amplitude
-         fi = 0.0,         // the instantaneous frequency
-         delta_u,          // incremental change in the sweep data
+         phase,            
         *u;                // vector of sweep data
 
   int    nTu, nTd,         // points in the taper stages
@@ -71,24 +62,24 @@ int main(int argc, char *argv[])
          nT,               // total number of points in the record
          t0 = 0,           // the time at the start of the chirp
          t = 0,            // index of the data record
-         slope = 0;        // the instantaneous phase
+         sign = 0;         // the instantaneous sign 
 
   void   exit();
 
-  sprintf(usage," chirpt sr offset ao af fo ff T p q outFile");
+  sprintf(usage," chirpq sr offset ao af fo ff T p q outFile");
 
   printf("\n  to run:  %s \n\n", usage );
 
   // default values 
-  if (argc < 11) sprintf(fn,"chirpt.dat"); else strcpy( fn, argv[10]);
+  if (argc < 11) sprintf(fn,"chirpq.dat"); else strcpy( fn, argv[10]);
   if (argc < 10) q = 1;                   else q      = atof( argv[9] );
   if (argc <  9) p = 1;                   else p      = atof( argv[8] );
   if (argc <  8) T  = 30.0;               else T      = atof( argv[7] );
   if (argc <  7) ff = 10.0;               else ff     = atof( argv[6] );
   if (argc <  6) fo =  1.0;               else fo     = atof( argv[5] );
-  if (argc <  5) af = 50.0;               else af     = atof( argv[4] );
+  if (argc <  5) af = 20.0;               else af     = atof( argv[4] );
   if (argc <  4) ao = 50.0;               else ao     = atof( argv[3] );
-  if (argc <  3) offset = 00.0;           else offset = atof( argv[2] );
+  if (argc <  3) offset = 50.0;           else offset = atof( argv[2] );
   if (argc <  2) sr = 200.0;              else sr     = atof( argv[1] );
 
   if (ff/sr > 0.051 || fo/sr > 0.051) // want more than 20 points / cycle 
@@ -122,15 +113,16 @@ int main(int argc, char *argv[])
 
   // frequency sweep via instantaneous phase angle
  
-  slope = +1;
+  sign = +1;
   for ( t=t0 ; t <= t0 + nTs; t++ ) {
     ai = ao + (af - ao) * pow(((float)(t)/(float)(cycles)),q);
-    fi = fo + (ff - fo) * pow(((float)(t)/(float)(cycles)),p);
+    phase = 2*PI * ((t-t0)*fo/sr + ( ff - fo )*pow((t-t0)/sr,p+1) /
+                                   ( (p+1)*pow(T,p) ));
 
-    u[t] = u[t-1] + slope * 4.0*ai*fi/sr;
-     
-    if ( u[t] >  ai ) slope = -1;
-    if ( u[t] < -ai ) slope = +1;
+    if ( cos(phase) > 0 ) sign = +1;
+    if ( cos(phase) < 0 ) sign = -1;
+
+    u[t] = sign*ai;
   }
   
   // taper up the inital section and taper down the final section
