@@ -13,7 +13,7 @@ Program chirpt.c - Generate a file of triangular data with changing frequency an
           q       : frequency distribution
           outFile : output data file
 
-  output: u       : random output signal
+  output: u       : triangular waveform data
 
 The frequency can change linearly with time or expnentially with time.
 When the frequency increases exponentially with time, more time is spent on

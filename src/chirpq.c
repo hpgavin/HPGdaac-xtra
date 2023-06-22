@@ -13,7 +13,7 @@ Program chirpq.c - Generate a file of square waveform data with changing frequen
           q       : frequency distribution
           outFile : output data file
 
-  output: u       : random output signal
+  output: u       : square waveform data
 
 to compile: gcc -O -o chirpq chirpq.c HPGutil.c NRutil.c -lm 
 
