@@ -57,7 +57,7 @@ usage
 bwrand  sr offset  f_lo  f_hi  T   seed   outfile
 ```
 
-* **chirps.c** - Generate a file of sinusoidal data with changing frequency and amplitude
+* **chirpq.c** - Generate a file of square waveform data with changing frequency and amplitude
 ```
   input:  sr      : sample rate (samples per second) 
           offset  : offset from zero
@@ -70,14 +70,14 @@ bwrand  sr offset  f_lo  f_hi  T   seed   outfile
           q       : frequency distribution
           outFile : output data file
 
-  output: u       : random output signal
+  output: u       : square wave data
 ```
 usage
 ```
 chirps sr offset ao af fo ff T p q outFile 
 ```
 
-* **chirpt.c** - Generate a file of triangular data with changing frequency and amplitude
+* **chirps.c** - Generate a file of sinusoidal waveform data with changing frequency and amplitude
 ```
   input:  sr      : sample rate (samples per second) 
           offset  : offset from zero
@@ -90,7 +90,27 @@ chirps sr offset ao af fo ff T p q outFile
           q       : frequency distribution
           outFile : output data file
 
-  output: u       : random output signal
+  output: u       : sine wave data
+```
+usage
+```
+chirps sr offset ao af fo ff T p q outFile 
+```
+
+* **chirpt.c** - Generate a file of triangular waveform data with changing frequency and amplitude
+```
+  input:  sr      : sample rate (samples per second) 
+          offset  : offset from zero
+          ao      : initial amplitude 
+          af      : final amplitude 
+          fo      : initial frequency
+          ff      : final frequncey
+          T       : time duration of the data
+          p       : amplitude distribution
+          q       : frequency distribution
+          outFile : output data file
+
+  output: u       : triangle wave data
 ```
 usage
 ```
@@ -99,24 +119,24 @@ chirpt sr offset ao af fo ff T p q outFile
 
 * **ktrand.c** - synthetic earthquake ground motion with the Kannai Tajimi spectrum
 ```
-  input:  Sv      : peak amplitude ( > 0 )
-          Fg      : natural frequency of ground motion
-          Zg      : damping ratio of ground motion
-          Vp      : pulse amplitude ( > 0 )
-          Tp      : pulse period
-          Nc      : pulse cycles
-          points  : number of points in the vector  ( > 0 )
-          delta_t : time step interval  
+Program ktrand.c - synthetic earthquake ground motion with the Kannai Tajimi spectrum
+
+  input:  sr      : sample rate,         samples per second
+          offset  : static offset                       %FS
+          RMS     : rms amplitude ( > 0 )               %FS
+          fg      : natural frequency of ground motion,  Hz
+          zg      : damping ratio of ground motion
+          aa      : envelope rise  parameter
+          tt      : envelope decay parameter
+          T       : time duration,                        s
           seed    : seed of the random number generator
           file    : name of output file
 
   output: Accel   : ground acceleration
-          Veloc   : ground velocity
-          Displ   : ground displacement
 ```
 usage
-```
-ktrand  Sv Fg Zg Vp Tp Nc points delta_t seed file
+``` 
+ktrand  sr RMS fg zg aa tt T seed datafile
 ```
 
 * **pulse.c** - Generate a file with pulse-like waveform data.  
@@ -142,9 +162,6 @@ usage
 ```
 ramp
 ```
-
-* **square.c** - makes a file of an asymmetric square wave 
-
 
 ------------------------------
 
