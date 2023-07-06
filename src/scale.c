@@ -124,7 +124,7 @@ int main ( int argc, char *argv[] ) {
   for ( chn=firstChnl; chn <= lastChnl; chn++ )
     cf[chn] = (float) (chn-firstChnl)*sr/BURST_RATE;
 
-  for (i=1; i<=HEAD_LINES; i++) {  /* scan through the header */
+  for (i=1; i<=HEAD_LINES-1; i++) {  /* scan through the header */
     len = getLine ( fp_raw, MAXL, line );
     for (j=0; j<len-1; j++)
       putc ( line[j], fp_scl );
@@ -159,7 +159,7 @@ int main ( int argc, char *argv[] ) {
     fprintf(fp_scl," %5.3f           ", S[chn]);
   fprintf(fp_scl,"\n");
 
-  fprintf(fp_scl,"%% time        ");
+  fprintf(fp_scl,"%%  time       ");
   for (chn=firstChnl; chn <= lastChnl; chn++)
     fprintf(fp_scl,"  chn %2d         ", chn );
   if ( integChnl >= firstChnl && integChnl <= lastChnl )
