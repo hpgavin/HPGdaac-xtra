@@ -132,7 +132,7 @@ int main ( int argc, char *argv[] ) {
   }
 
 // write sensitivity-related header metadata 
-  fprintf(fp_scl, "%% sensor sensitivity file: %s \n", argv[1] );
+  fprintf(fp_scl, "%% sensor sensitivity file name: %s \n", argv[1] );
   fprintf(fp_scl, "%% %s \n", title );
   fprintf(fp_scl, "%% sensitivity:");
   for (chn=firstChnl; chn <= lastChnl; chn++) 
