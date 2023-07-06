@@ -159,7 +159,7 @@ int main ( int argc, char *argv[] ) {
     fprintf(fp_scl," %5.3f           ", S[chn]);
   fprintf(fp_scl,"\n");
 
-  fprintf(fp_scl,"%% time (sec)  ");
+  fprintf(fp_scl,"%% time        ");
   for (chn=firstChnl; chn <= lastChnl; chn++)
     fprintf(fp_scl,"  chn %2d         ", chn );
   if ( integChnl >= firstChnl && integChnl <= lastChnl )
@@ -167,6 +167,11 @@ int main ( int argc, char *argv[] ) {
   if ( diffrChnl >= firstChnl && diffrChnl <= lastChnl )
     fprintf(fp_scl," diff chn %2d ", diffrChnl );
   fprintf(fp_scl,"\n");
+  fprintf(fp_scl,"%%  seconds  ");
+  for (chn=firstChnl; chn <= lastChnl; chn++)
+    fprintf(fp_scl,"    %-11s  ",  units[chn] );
+  fprintf(fp_scl,"\n");
+
 
 
 // read in the raw integer data

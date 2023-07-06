@@ -228,9 +228,9 @@ resample in_file  out_file
 ```
 usage
 ```
-scale 'sensitivity file' 'unscaled file' 'scaled file' 'stats file'
+scale 'sensor configuration file' 'raw data file' 'scaled data file' 'stats file'
 ```
-Sensitivity data file format
+Sensor configuration file format
 ```      
 Descriptive Title (one line only)
 X label : "time, sec" 
