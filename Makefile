@@ -22,18 +22,17 @@ LFLAGS := -lm
 all : baseline  bwrand  chirpq  chirps  chirpt   deskip  glue  ktrand  limits   pulse  ramp  resample  scale  skew  xfer 
 
 $(DIR_O)/%.o : $(DIR_N)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c  $< -o   $@
 
 $(DIR_O)/%.o : $(DIR_C)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
+	$(CC) $(CFLAGS) -c  $< -o   $@
 
 baseline : $(DIR_O)/baseline.o  $(DIR_O)/HPGutil.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
-	
+
 bwrand : $(DIR_O)/bwrand.o  $(DIR_O)/HPGutil.o  $(DIR_O)/NRutil.o   $(DIR_O)/HPGsignal.o   $(DIR_O)/HPGmatrix.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
-	
+
 chirpq : $(DIR_O)/chirpq.o  $(DIR_O)/HPGutil.o  $(DIR_O)/NRutil.o  
 	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
 
