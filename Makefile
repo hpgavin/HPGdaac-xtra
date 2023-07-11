@@ -1,3 +1,14 @@
+# ========================================================================= #
+#                                                                           #
+#       Makefile for building programs in : HPGdaac-xtra                    #
+#                                                                           #
+#       these programs create D-to-A data files and process files of        #
+#       measured data collected by HPGdaac                                  #
+#                                                                           #
+#       high performance graphical data acquisition and cotrol              #
+#                                                                           #
+# ========================================================================= #
+
 SHELL = /bin/bash
 
 DIR_C := ./src
