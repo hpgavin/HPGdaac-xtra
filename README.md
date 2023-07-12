@@ -139,20 +139,20 @@ usage
 ktrand  sr RMS fg zg aa tt T seed datafile
 ```
 
-* **pulse.c** - Generate a file with pulse-like waveform data.  
+* **impulse.c** - Generate a file with impulse-like waveform data.  
 
 ```
   input:  sr      : sample rate, samples per second 
-          Tp      : period of the pulse
-          Nc      : number of cycles in the pulse
+          Tp      : period of the impulse
+          Nc      : number of cycles in the impulse
           T       : duration of the record
-          Vp      : pulse amplitude ( > 0ber generator
+          Vp      : impulse amplitude ( > 0ber generator
           file    : name of output file
 ```
 usage
 
 ```
-pulse sr Tp Nc T pulse.dat 
+impulse sr Tp Nc T impulse.dat 
 
 ```
 

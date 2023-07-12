@@ -1,16 +1,16 @@
 /******************************************************************************
-pulse.c - Generate a file with pulse-like waveform data. 
+impulse.c - Generate a file with impulse-like waveform data. 
 
- to compile: gcc -O -o pulse pulse.c HPGsignal.c HPGmatrix.c fft.c gamma.c NRutil.c -lm
+ to compile: gcc -O -o impulse impulse.c HPGsignal.c HPGmatrix.c fft.c gamma.c NRutil.c -lm
 
   input:  sr      : sample rate, samples per second 
-          Tp      : period of the pulse
-          Nc      : number of cycles in the pulse
+          Tp      : period of the impulse
+          Nc      : number of cycles in the impulse
           T       : duration of the record
-          Vp      : pulse amplitude ( > 0ber generator
+          Vp      : impulse amplitude ( > 0ber generator
           file    : name of output file
 
- to run:     pulse sr Tp Nc T pulse.dat 
+ to run:     impulse sr Tp Nc T impulse.dat 
 
 
 Henri Gavin, Dept. Civil Engineering, Duke University, 18 Dec. 2012
@@ -27,24 +27,24 @@ Henri Gavin, Dept. Civil Engineering, Duke University, 18 Dec. 2012
 
 int main ( int argc, char *argv[] )
 {
-	char	pulse_fn[80];	/* the output pulse motion filename	*/
+	char	impulse_fn[80];	/* the output impulse motion filename	*/
 
-	FILE	*pulse_fp;	/* file pointer t0 the output data file	*/
+	FILE	*impulse_fp;	/* file pointer t0 the output data file	*/
 
-	float	pulse_time = 0.0, /* the time t0 sweep the frequency band */
+	float	impulse_time = 0.0, /* the time t0 sweep the frequency band */
 		t = 0.0,	/* the current global time		*/
-		t0 = 0.50,	/* the time at the start of the pulse, s*/
+		t0 = 0.50,	/* the time at the start of the impulse, s*/
 		pi, two_pi,	/* (2.0) (3.14...)			*/
 		scale, 		/*  scale factor  */
-		Tp = 1.0,	/* pulse period				*/
-		Nc = 1.0,	/* number of pulse cycles		*/
+		Tp = 1.0,	/* impulse period				*/
+		Nc = 1.0,	/* number of impulse cycles		*/
 		T = 20.0,	/* duration				*/
 		sr = 100.0,	/* sample rate			 	*/
- 		n  = 2.0,	/* rise-time value for pulse		*/
+ 		n  = 2.0,	/* rise-time value for impulse		*/
 		phi = 0.0,	/* phase shift angle, radians		*/
-		tau, 		/* decay time constant for the pulse	*/
+		tau, 		/* decay time constant for the impulse	*/
 		gain = 1.0,	/* update gain				*/
-		*accel, *veloc, *displ, /* the pulse motion		*/
+		*accel, *veloc, *displ, /* the impulse motion		*/
 		*vc, *ac,	/* baseline correction records		*/
 		GT, 		/* envelope normalization factor	*/
 		velT, dspT, dspT_old; /* displacement and velocity at end */
@@ -58,22 +58,22 @@ int main ( int argc, char *argv[] )
 
 	if ( argc == 1 ) {	// print usage
 		fprintf(stderr," usage: \n");
-		fprintf(stderr," pulse sr Tp Nc T pulse.dat \n");
+		fprintf(stderr," impulse sr Tp Nc T impulse.dat \n");
         }
 
 	if ( argc < 5 ) {	// interactive  input
 		printf(" Sample rate:                 ");sfrv=scanf("%f", &sr );
 		printf(" Pulse period (sec):          ");sfrv=scanf("%f", &Tp );
-		printf(" Number of pulse cycles:      ");sfrv=scanf("%f", &Nc );
+		printf(" Number of impulse cycles:      ");sfrv=scanf("%f", &Nc );
 		printf(" Duration:                    ");sfrv=scanf("%f", &T );
-		printf(" Output pulse record filename:");sfrv=scanf("%s", pulse_fn);
+		printf(" Output impulse record filename:");sfrv=scanf("%s", impulse_fn);
 	} else {	// command-line input
 		sr = atof(argv[1]);
 		Tp = atof(argv[2]);
 		Nc = atof(argv[3]);
 		T  = atof(argv[4]);
-		strcpy(pulse_fn , argv[5]);
-		printf(" Tp=%f Nc=%f sr=%f T=%f fn=%s\n",Tp,Nc,sr,T,pulse_fn);
+		strcpy(impulse_fn , argv[5]);
+		printf(" Tp=%f Nc=%f sr=%f T=%f fn=%s\n",Tp,Nc,sr,T,impulse_fn);
 	}
 
 	pi     = acos(-1.0);
@@ -82,10 +82,10 @@ int main ( int argc, char *argv[] )
 	points = floor(T*sr);
 	p0     = floor(t0*sr);
 
- 	tau = Nc*Tp/(2.0*n);	// decay time constant of pulse
+ 	tau = Nc*Tp/(2.0*n);	// decay time constant of impulse
 
-	pulse_time =  2.0 * n * Nc * Tp;
-	printf(" Pulse Time %.2f sec\n", pulse_time );
+	impulse_time =  2.0 * n * Nc * Tp;
+	printf(" Pulse Time %.2f sec\n", impulse_time );
 
 	if (1.0/(Tp*sr) > 0.051 )	// > 20 points / cycle 
 	 printf("  warning: sample rate is too low for hydraulic actuators!\n");
@@ -101,12 +101,12 @@ int main ( int argc, char *argv[] )
 	 exit(1);
 	}
 
-	if (( pulse_fp = fopen(pulse_fn, "w" )) == NULL ) {
-		printf ("  error: cannot open sine-sweep file '%s'\n",pulse_fn);
+	if (( impulse_fp = fopen(impulse_fn, "w" )) == NULL ) {
+		printf ("  error: cannot open sine-sweep file '%s'\n",impulse_fn);
 		exit(1);
 	}
 	
-	// set phase of pulse such that terminal velocity is practically zero
+	// set phase of impulse such that terminal velocity is practically zero
 	phi = -pi/2.0 + (n+1.0)*atan(tau*2*pi/Tp);
 
 	// printf(" tau = %f phi = %f \n", tau, phi);	// debug
@@ -166,22 +166,22 @@ int main ( int argc, char *argv[] )
 
 	scale = 2040.0 / maxAbsV(displ, points, &p);
 
-	fprintf(pulse_fp, "%% pulse displacement data file \n");
-	fprintf(pulse_fp, "%% pulse period     = %7.2f seconds \n", Tp );
-	fprintf(pulse_fp, "%% number of cycles = %7.2f         \n", Nc );
-	fprintf(pulse_fp, "%% duration         = %7.2f seconds \n", T );
-	fprintf(pulse_fp, "%% sample rate      = %7.2f samples/second \n", sr );
-	fprintf(pulse_fp, "%% pulse time       = %7.2f seconds \n",pulse_time);
-	fprintf(pulse_fp, "%% iter = %d  dspT = %e  (baseline correction) \n", iter, dspT );
+	fprintf(impulse_fp, "%% impulse displacement data file \n");
+	fprintf(impulse_fp, "%% impulse period     = %7.2f seconds \n", Tp );
+	fprintf(impulse_fp, "%% number of cycles = %7.2f         \n", Nc );
+	fprintf(impulse_fp, "%% duration         = %7.2f seconds \n", T );
+	fprintf(impulse_fp, "%% sample rate      = %7.2f samples/second \n", sr );
+	fprintf(impulse_fp, "%% impulse time       = %7.2f seconds \n",impulse_time);
+	fprintf(impulse_fp, "%% iter = %d  dspT = %e  (baseline correction) \n", iter, dspT );
 
 	for (p=1; p<=points; p++) 
-		fprintf(pulse_fp, "%5.0f\n", displ[p]*scale );
-//		fprintf(pulse_fp, "%15.5f %15.5f %15.5f\n",
+		fprintf(impulse_fp, "%5.0f\n", displ[p]*scale );
+//		fprintf(impulse_fp, "%15.5f %15.5f %15.5f\n",
 //			accel[p]*scale, veloc[p]*scale, displ[p]*scale );
 	
 	printf(" %d points at %.2f samples per second in %.2f seconds\n",
 					points, sr, points/sr );
-	fclose (pulse_fp);
+	fclose (impulse_fp);
 
 	free_vector(accel,1,points);
 	free_vector(displ,1,points);

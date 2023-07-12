@@ -19,7 +19,7 @@ CC := gcc
 CFLAGS := -O
 LFLAGS := -lm 
 
-all : baseline  bwrand  chirpq  chirps  chirpt   deskip  glue  ktrand  limits   pulse  ramp  resample  scale  skew  xfer 
+all : baseline  bwrand  chirpq  chirps  chirpt   deskip  glue  ktrand  limits   impulse  ramp  resample  scale  skew  xfer 
 
 $(DIR_O)/%.o : $(DIR_N)/%.c
 	$(CC) $(CFLAGS) -c  $< -o   $@
@@ -54,7 +54,7 @@ ktrand : $(DIR_O)/ktrand.o  $(DIR_O)/HPGutil.o  $(DIR_O)/NRutil.o  $(DIR_O)/HPGm
 limits : $(DIR_O)/limits.o  
 	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
 
-pulse : $(DIR_O)/pulse.o $(DIR_O)/NRutil.o  $(DIR_O)/HPGsignal.o  $(DIR_O)/HPGmatrix.o 
+impulse : $(DIR_O)/impulse.o $(DIR_O)/NRutil.o  $(DIR_O)/HPGsignal.o  $(DIR_O)/HPGmatrix.o 
 	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
 
 ramp : $(DIR_O)/ramp.o  
@@ -74,7 +74,7 @@ xfer : $(DIR_O)/xfer.o  $(DIR_O)/NRutil.o   $(DIR_O)/HPGutil.o  $(DIR_O)/HPGmatr
 
 
 install :
-	mv baseline bwrand chirpq chirps chirpt deskip glue ktrand limits pulse ramp resample scale skew xfer  /usr/local/bin
+	mv baseline bwrand chirpq chirps chirpt deskip glue ktrand limits impulse ramp resample scale skew xfer  /usr/local/bin
 
 clean :
 	rm $(DIR_O)/*.o 
