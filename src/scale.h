@@ -18,7 +18,8 @@
 #endif
 
 void read_header ( char *argv[],
-        int *nScan, float *sr, int *first_chnl, int *last_chnl, int *nChnl, float *range);
+        	int *nScan, float *sr, float *cr, 
+		int *first_chnl, int *last_chnl, int *nChnl, float *range);
 
 void read_sensitivity ( char *argv[], char *title,
 		float *sensi, int *C, int *D, float *S,

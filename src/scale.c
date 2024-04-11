@@ -23,7 +23,7 @@ gcc -O -o scale scale.c NRutil.c  HPGmatrix.c HPGsignal.c HPGutil.c -lm
 
  To run: scale 'sensitivity file' 'unscaled file' 'scaled file' 'stats file'
 
- H.P. Gavin, Department of Civil Engineering, Duke University,   2023-02-19
+ H.P. Gavin, Department of Civil Engineering, Duke University,   2024-02-11
 ****************************************************************************/
 
 #include <stdio.h>
@@ -51,7 +51,8 @@ int main ( int argc, char *argv[] ) {
           units[16][MAXL];      // sensitivity units of each channel  
 
   float   **r, **s,             // the raw and scaled data    
-          sr = 10.0, t,         // sample rate and current time    
+          sr=100.0, cr=1000.0,  // sample rate and conversion rate
+	  t,                    // sample rate and current time    
           cf[24],               // correction factor for asynch samples  
           sensi[24],            // transducer sensitivity in volts/unit 
           min[24],max[24],      // minimum and maximum values    
@@ -99,7 +100,7 @@ int main ( int argc, char *argv[] ) {
      exit(1);
   }
 
-  read_header ( argv, &nScan, &sr, &firstChnl, &lastChnl, &nChnl, range );
+  read_header ( argv, &nScan, &sr, &cr, &firstChnl, &lastChnl, &nChnl, range );
 
   read_sensitivity ( argv, title, sensi, C, D, S, 
                      firstChnl, lastChnl, xLabel, yLabel, chnlLabel, units,
@@ -496,7 +497,7 @@ int main ( int argc, char *argv[] ) {
 /*-----------------------------------------------------------------------------
 READ_HEADER -  read data file header, open input/output files    7mar22
 ------------------------------------------------------------------------------*/
-void read_header ( char *argv[], int *nScan, float *sr, int *firstChnl, int *lastChnl, int *nChnl, float *range) 
+void read_header ( char *argv[], int *nScan, float *sr, float *cr, int *firstChnl, int *lastChnl, int *nChnl, float *range) 
 {
   int  i, chn, ok;
   char  str[MAXL], ch;
@@ -547,8 +548,14 @@ void read_header ( char *argv[], int *nScan, float *sr, int *firstChnl, int *las
 
 // HPADDA DAC
 // % 1200 scans of 1 channels at 100 scans per second in 12.000 seconds
+//ok=fscanf(fp_raw,"%s %d %s %s %d %s %s %f",
+//                str, nScan, str, str, nChnl, str, str, sr );
+
+// 2024-02-11 ...
+// % 1200 scans of 2 channels at 100 sps and 2000 cps in 12.000 seconds
   ok=fscanf(fp_raw,"%s %d %s %s %d %s %s %f",
-                  str, nScan, str, str, nChnl, str, str, sr );
+                  str, nScan, str, str, nChnl, str, str, sr, str, str, cr );
+  
   *firstChnl = 0;  *lastChnl = *firstChnl + *nChnl - 1;
 
 //fprintf(stdout,"\n\n nScan: %4d   firstnChnl:  %2d  lastChnl: %2d  nChnl:  %2d  sample rate: %.1f \n\n",
