@@ -587,7 +587,7 @@ integChnl :
 diffrChnl :
 Channel  Label             Sensitivity  V/Unit    DeClip  Detrend  Smooth  
 ===============================================================================
- 0  "table accel."       0.004048   "cm/s/s"  0  3  0.1
+ 0      "table accel."       0.004048   "cm/s/s"        0  3  0.1
  1      "table displ."       1.312      "cm"            0  3  0.1
  2      "platfm displ. 1"    1.000      "cm"            5  4  0.1
  3      "platfm displ. 2"    1.000      "cm"            5  4  0.1
